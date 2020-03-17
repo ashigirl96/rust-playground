@@ -52,3 +52,36 @@ C言語と違って、シンタックスエラーどころかセマンティッ�
 
 
 
+## はじめてのRust
+
+### ルーツチェイン
+
+- rustc: rust compoiler
+- cargo: build manager && package manager
+- std: standard library
+
+- Linker: コンパイラが出力したオブジェクトファイルやライブラリを結合してABIに則って実行ファイルを出力する。OS向けに用意されてる。Linuxのgcc, binutils. macOSのXcode commandline
+- ABI(Application Binary Interface): マシンコードが実行時にOSとやりとりする方法を取り決める仕様
+- rustup: Rustのバージョン管理、クロスコンパイル用ターゲットのインスコ、RLSなどの開発支援ツール(ここからrustをインスコする）
+
+### cargoコマンド
+
+- --bin: バイナリパッケージが作られる. ルートはsrc/main.rs。cargo new のデフォルト
+
+- --lib: ライブラリパッケージが作られる. ルートはsrc/lib.rs
+
+- Cargo.toml: package.jsonみたいなやつ
+
+- build: バイナリが生成される
+
+  1. コードの検査：rustcによりエラーがないか検査
+
+  2. コンパイル：問題なければ、rustcによりアセンブリコードへ変換し、オブジェクトファイルが生成
+
+  3. リンカ：rustcがリンカを起動し、オブジェクトファイルとRust標準ライブラリの結合し、実行ファイルを生成 (※ libクレートはここをしない)
+
+  
+
+### 簡単な構文
+
+- 感嘆符！が付いてるのはマクロ。コンパイル時に評価される
