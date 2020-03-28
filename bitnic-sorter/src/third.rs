@@ -1,6 +1,11 @@
 use crate::SortOrder;
 use std::cmp::Ordering;
 
+pub fn is_power_of_two(x: usize) -> bool {
+    let y = (x as f64).log2();
+    y == y as u64 as f64
+}
+
 pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
     match *order {
         SortOrder::Ascending => sort_by(x, &|a, b| a.cmp(b)),
@@ -12,7 +17,7 @@ fn sort_by<T, F>(x: &mut [T], comparator: &F) -> Result<(), String>
 where
     F: Fn(&T, &T) -> Ordering,
 {
-    if x.len().is_power_of_two() {
+    if is_power_of_two(x.len()) {
         do_sort(x, true, comparator);
         Ok(())
     } else {
@@ -66,7 +71,18 @@ where
 
 #[cfg(test)]
 mod test {
-    impl std::fmt::Display for Student {
+    use crate::third::{sort, sort_by};
+    use crate::SortOrder::*;
+    use std::fmt::Display;
+
+    #[derive(Debug)]
+    struct Student {
+        first_name: String,
+        last_name: String,
+        age: u8,
+    }
+
+    impl Display for Student {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             write!(
                 f,
@@ -74,12 +90,6 @@ mod test {
                 self.first_name, self.last_name, self.age
             )
         }
-    }
-    #[derive(Debug)]
-    struct Student {
-        first_name: String,
-        last_name: String,
-        age: u8,
     }
 
     impl Student {
@@ -99,9 +109,6 @@ mod test {
                 && self.age == other.age
         }
     }
-
-    use crate::third::{sort, sort_by};
-    use crate::SortOrder::*;
 
     #[test]
     fn sort_u32_ascending() {
@@ -162,8 +169,22 @@ mod test {
     }
 
     #[test]
-    fn pointer_of_jstduent() {
+    fn print_stduent() {
         let takeda = Student::new("Takeda", "Shingen", 23);
+        println!("{:?}", takeda);
+        println!("{:?}", &takeda);
+        println!("{:p}", &takeda);
         println!("{}", takeda);
+    }
+
+    #[test]
+    fn is_power_of_two() {
+        use crate::third::is_power_of_two;
+
+        assert_eq!(is_power_of_two(2), true);
+        assert_eq!(is_power_of_two(3), false);
+        assert_eq!(is_power_of_two(4), true);
+        assert_eq!(is_power_of_two(6), false);
+        assert_eq!(is_power_of_two(8), true);
     }
 }
