@@ -1,5 +1,6 @@
 fn apply2<F>(stack: &mut Vec<f64>, fun: F)
-    where F: Fn(f64, f64) -> f64,
+where
+    F: Fn(f64, f64) -> f64,
 {
     if let (Some(y), Some(x)) = (stack.pop(), stack.pop()) {
         let z = fun(x, y);
@@ -25,7 +26,6 @@ fn rpn(exp: &str) -> f64 {
                 "-" => apply2(&mut stack, |x, y| x - y),
                 "*" => apply2(&mut stack, |x, y| x * y),
                 "/" => apply2(&mut stack, |x, y| x / y),
-
                 // finish to panic, if the token is not operator
                 _ => panic!("Unknown operator: {}", token),
             }
