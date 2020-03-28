@@ -1,9 +1,7 @@
 use crate::SortOrder;
 use std::cmp::Ordering;
-use std::fmt;
-use std::usize;
 
-fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
+pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
     match *order {
         SortOrder::Ascending => sort_by(x, &|a, b| a.cmp(b)),
         SortOrder::Descending => sort_by(x, &|a, b| b.cmp(a)),
@@ -102,9 +100,17 @@ mod test {
         }
     }
 
-    use super::sort;
-    use crate::third::sort_by;
+    use crate::third::{sort, sort_by};
     use crate::SortOrder::*;
+
+    #[test]
+    fn sort_u32_ascending() {
+        let mut x = vec![10, 30, 11, 20, 4, 330, 21, 110];
+
+        assert_eq!(sort(&mut x, &Ascending), Ok(()));
+
+        assert_eq!(x, vec![4, 10, 11, 20, 21, 30, 110, 330]);
+    }
 
     #[test]
     fn sort_student_ascending() {

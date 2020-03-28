@@ -1,5 +1,4 @@
 use crate::SortOrder;
-use std::usize;
 
 pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
     if x.len().is_power_of_two() {
