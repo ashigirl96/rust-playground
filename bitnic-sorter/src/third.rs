@@ -72,6 +72,7 @@ where
 #[cfg(test)]
 mod test {
     use crate::third::{sort, sort_by};
+    use crate::utils::{is_sorted, new_u32_vec};
     use crate::SortOrder::*;
     use std::fmt::Display;
 
@@ -117,6 +118,13 @@ mod test {
         assert_eq!(sort(&mut x, &Ascending), Ok(()));
 
         assert_eq!(x, vec![4, 10, 11, 20, 21, 30, 110, 330]);
+    }
+
+    #[test]
+    fn sort_u32() {
+        let mut x = new_u32_vec(65536);
+        assert_eq!(sort(&mut x, &Ascending), Ok(()));
+        assert!(is_sorted(&mut x, &Ascending));
     }
 
     #[test]
