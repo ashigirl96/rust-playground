@@ -4,6 +4,8 @@ fn main() {
     let n1 = 1200;
     let n2 = 1000;
 
+    let x = vec!['t', 'r', 'u', 's', 't'];
+
     let child = thread::spawn(move || heavy_compute("child", n2));
 
     let s1 = heavy_compute("main", n1);

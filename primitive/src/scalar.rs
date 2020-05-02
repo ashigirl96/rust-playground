@@ -107,7 +107,8 @@ pub fn print_tuple() {
 }
 
 pub fn print_array_type() {
-    let a1 = [false, true, false];
+    let mut a1 = [false, true, false];
+    a1[0] = true;
     eprintln!("a1 = {:?}", a1);
     let a2 = [2; 3];
     println!("{:?}", a2);

@@ -428,5 +428,70 @@ str型はUTF-8で表現したときの長さなので、気をつけなきゃや
 - 文字列リテラル(`&'static str'`)から`&mut str`は直接得られない
   - 文字列リテラル→String→&mut str
 
+# ユーザ定義型
 
+- プログラム実行時のメモリ領域（スタック領域とヒープ領域）
+
+について学んでいく
+
+## stack area & heap area
+
+![image-20200426162518239](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200426162518239.png)
+
+
+
+- `スタック領域` : スレッドごとに用意されるメモリ領域で、関数内のローカル変数やデータが格納されている。関数から抜けたり、スレッドが終了するとスタックの内容は破棄される
+
+  - シンプル
+  - サイズがあまり大きくない
+    - スタック領域に格納しきれなくなると、スタックオーバーフローが起こる
+  - Rustのデフォルト
+
+- `ヒープ領域`:プログラム内で共有されるデータを格納するメモリ領域。必要なときに確保と解放ができる
+
+  - アロケータと呼ばれるライブラリを通して確保・解放を行っているため、その時間が遅くなってしまう
+  - 大量のデータが格納できる
+  - Boxポインタ、Vec<T>やHashMap<K, V>のような要素数が可変のコレクション型の要素
+  - StringやOSStringのような文字の追加や削除が可能な文字列型の要素
+
+  ![image-20200426163001838](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200426163001838.png)
+
+## 	標準ライブラリの主な型
+
+ヒープ再割当てなしで格納できる最大の要素数のことを**キャパシティ**という<img src="/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200426163932635.png" alt="image-20200426163932635"  />![image-20200426163943037](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200426163943037.png)
+
+タプルがヒープ領域に移動した後、`t1`は初期化されてない状態になるので、アクセスしようとするとコンパイルエラーになる
+
+`Vec<T>`の`append`は追加する要素が`mut Vec<T>`である必要があり、追加されたあと削除されている。`extend_from_slice`だと、削除されない
+
+![image-20200427002000214](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200427002000214.png)
+
+![image-20200427002011153](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200427002011153.png)
+
+- `Vec<T>`が余分のスペースを確保しているのに対して、`Box<[T]>`は余分なスペースを持たないヒープ領域の配列みたいな感じ
+  - `Vec<T>`の`shrink_tofit()`で余分なメモリを削ぎ落とすことができる
+
+### その他のコレクション
+
+collection typeはベクタのような値の集合を格納する型の総称。
+
+- map: `HashMap`, `BTreeMap`(Btreeを使用した順序付きマップ)
+- Set: `HashSetp`, `BTreeSet`(Btreeを使用した順序付きｾｯﾄ)
+- Queue: `VecQueue`(循環バッファ), `BinaryHeap`(優先順位付きキュー)
+- List: `LinkedList`(双方向連結リスト)
+
+
+
+### std::string::String
+
+&strとStringの関係は、immutable sliceとvectorの関係に似てる
+
+![image-20200427005353442](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200427005353442.png)
+
+- String: は実データを所有している
+- &str: は不変スライスで、実データを所有せず、借用している
+  - 文字列リテラルから作られた場合は、スタック領域。
+  - Stringから作られた場合は、ヒープ領域に実データをおいて参照する
+
+![image-20200427005633214](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200427005633214.png)
 
