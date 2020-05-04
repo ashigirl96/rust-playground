@@ -495,3 +495,78 @@ collection typeはベクタのような値の集合を格納する型の総称�
 
 ![image-20200427005633214](/Users/reon.nishimura/Library/Application Support/typora-user-images/image-20200427005633214.png)
 
+#### 関数の引数に文字列を使う場合
+
+- 文字列が不変なら低コスト: `&str`
+- 可変なら: `&mut String`
+- 可変+所有権: `String`
+
+関数内で`format!`などでString作った場合、それのメモリを返そうとしても、ライフタイムが尽きて削除されるので返せない。
+
+### std::ops::Range
+
+- ６つのRange*型のすべてに対応できるジェネリクスな関数を定義するには、RangeBoundsトレイトをつかう
+
+### Std::option::Option<T>
+
+値があるかわからん型。オプション型はSome(T型の値)とNoneのバリアントを持つ列挙型。
+
+`let mut o1 = Some(10);`でOption<i32>型という認識らしい。Someがオプション型？
+
+`unwrap`はSome(型)を開封し、中の値を取り出す。`.unwrap()`はNoneのときpanicしちゃうのでなるべく使わない
+
+- `unwrap`: Noneだったらpanic
+- `unwrap_or_else`: Noneじゃなかったらクロージャの返り値
+- `map`: クロージャを適用できる。NoneだったらNoneが返る
+- `and_then`: `if`式を定義できる
+
+### std::result::Result<T, E>
+
+`Result` もOk(<T>)とErr(<T>)のバリアントを持つ列挙型
+
+- ()`?`でOk型から値が取れるし、Noneだったらその場で関数からリターンする
+- `Result<i32, std::num::ParseIntError>` のように返り値はそれぞれ変えられる
+  - 問題なければOk型を返す
+
+#### Option<T>とResult<T, E>の変換
+
+- Option<T>のok_or_else(): Option→Result<T, E>
+- Result<T, E>のok(): Result<T, E>→Option<T>
+
+
+
+## 新しい型の定義と型エイリアス
+
+型エイリアス `type UserName = String;`
+
+Rustの構造体には、関数型レコードアップデート構文、とか、パターンマッチによる変数の代入とかがある
+
+```typescript
+// 関数型レコードアップデート構文
+return {
+  ...state,
+  data: {error: "hoge"},
+};
+
+// パターンマッチによる変数展開
+const { data } = state;
+```
+
+```rust
+// 関数型レコードアップデート構文
+    let y = Polygon {
+        vectexes: vec![(0, 1)],
+        stroke_width: x.stroke_width + 3,
+        ..x
+    };
+
+// パターンマッチによる変数展開
+let Polygon { vectexes: vect } = y;
+let Polygon { fill, ..} = y;
+```
+
+Defaultトレイトを実装することで、値を初期値を決められる `impl Default for Polygon { fn default() -> Self { ...}}`
+
+- ただし、すべてのフィールドがDefaultトレイトが実装されてないと使えない
+
+タプル構造体を使うと、引数の位置をしっかり考慮されるので、同じu32だったとしてもエラーになる
